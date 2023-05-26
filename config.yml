@@ -1,0 +1,38 @@
+# general cluster parameters (ClusterConfiguration)
+# version of the Deckhouse API
+apiVersion: deckhouse.io/v1
+# type of the configuration section
+kind: ClusterConfiguration
+# type of the infrastructure: bare metal (Static) or Cloud (Cloud)
+clusterType: Static
+# address space of the cluster's Pods
+podSubnetCIDR: 10.111.0.0/16
+# address space of the cluster's services
+serviceSubnetCIDR: 10.222.0.0/16
+# Kubernetes version to install
+kubernetesVersion: "1.23"
+# cluster domain (used for local routing)
+clusterDomain: "cluster.local"
+---
+# section for bootstrapping the Deckhouse cluster (InitConfiguration)
+# version of the Deckhouse API
+apiVersion: deckhouse.io/v1
+# type of the configuration section
+kind: InitConfiguration
+# Deckhouse parameters
+deckhouse:
+  # the release channel in use
+  releaseChannel: Stable
+  configOverrides:
+    global:
+      modules:
+        # template that will be used for system apps domains within the cluster
+        # e.g., Grafana for %s.example.com will be available as grafana.example.com
+        publicDomainTemplate: "%s.lezhena.ru"
+    # enable cni-flannel module
+    cniFlannelEnabled: true
+    # cni-flannel module settings
+    cniFlannel:
+      # flannel backend, available values are VXLAN (if your servers have L3 connectivity) and HostGW (for L2 networks)
+      # you might consider changing this
+      podNetworkMode: VXLAN
